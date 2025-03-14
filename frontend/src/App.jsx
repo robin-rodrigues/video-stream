@@ -6,6 +6,10 @@ import { Toaster } from "react-hot-toast";
 function App() {
     const [count, setCount] = useState(0);
 
+    const [videoId, setVideoId] = useState(
+        "d4493426-d4cd-4a3d-8be0-ca702a82b395"
+    );
+    
     return (
         <>
             <Toaster />
@@ -13,7 +17,22 @@ function App() {
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-100">
                     Video Streaming App
                 </h1>
-                <VideoUpload />
+
+                <div className="flex mt-14 w-full justify-around">
+                    <div>
+                        <h1 className="text-white">Playing Video</h1>
+                        <video
+                            style={{
+                                width: 500,
+                                height: 500,
+                            }}
+                            src={`http://localhost:8080/api/v1/videos/stream/${videoId}`}
+                            controls
+                        ></video>
+                    </div>
+
+                    <VideoUpload />
+                </div>
             </div>
         </>
     );
