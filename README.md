@@ -2,6 +2,12 @@
 
 A full-stack video streaming application built with **React (Flowbite UI)** for the frontend and **Spring Boot 3.4.3** for the backend. This project allows users to upload, store, and stream videos seamlessly, using **file storage** for video files and **MySQL** for metadata management. The video content is segmented to enhance security and prevent unauthorized downloads.
 
+## Demo Video
+
+Watch the demo video to see this project in action:
+[Demo Video](https://drive.google.com/file/d/1gGRAD4MHN0rmU9K9b0xND2MEcjloZKyp/view?usp=sharing)
+
+
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
