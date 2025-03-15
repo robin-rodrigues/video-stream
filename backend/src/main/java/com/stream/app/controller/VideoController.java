@@ -4,6 +4,9 @@ import com.stream.app.AppConstants;
 import com.stream.app.dto.CustomMessage;
 import com.stream.app.models.Video;
 import com.stream.app.service.VideoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -27,7 +30,12 @@ import java.util.UUID;
 @CrossOrigin("*")
 public class VideoController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VideoController.class);
+
     private final VideoService videoService;
+
+    @Value("${files.video.hls}")
+    private String HLS_DIR;
 
     public VideoController(VideoService videoService) {
         this.videoService = videoService;
@@ -119,14 +127,8 @@ public class VideoController {
             rangeEnd = fileLength - 1;
         }
 
-//        if (ranges.length > 1) {
-//            rangeEnd = Long.parseLong(ranges[1]);
-//        } else {
-//            rangeEnd = fileLength - 1;
-//        }
-
-        System.out.println("Start Range: " + rangeStart);
-        System.out.println("End Range: " + rangeEnd);
+        LOGGER.debug("Start Range: {}", rangeStart);
+        LOGGER.debug("End Range: {}", rangeEnd);
 
         InputStream inputStream;
         try {
@@ -157,10 +159,53 @@ public class VideoController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .build();
         }
-   }
+    }
 
     @GetMapping
     public List<Video> getAll() {
         return videoService.getAll();
+    }
+
+    @GetMapping("/{videoId}/master.m3u8")
+    public ResponseEntity<Resource> serverMasterFile(
+            @PathVariable String videoId
+    ) {
+        Path path = Paths.get(HLS_DIR, videoId, "master.m3u8");
+
+        System.out.println(path);
+
+        if (!Files.exists(path)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Resource resource = new FileSystemResource(path);
+
+        return ResponseEntity
+                .ok()
+                .header(
+                        HttpHeaders.CONTENT_TYPE, "application/vnd.apple.mpegurl"
+                )
+                .body(resource);
+    }
+
+    @GetMapping("/{videoId}/{segment}.ts")
+    public ResponseEntity<Resource> serverSegments(
+            @PathVariable String videoId,
+            @PathVariable String segment
+    ) {
+        Path path = Paths.get(HLS_DIR, videoId, segment + ".ts");
+
+        if (!Files.exists(path)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Resource resource = new FileSystemResource(path);
+
+        return ResponseEntity
+                .ok()
+                .header(
+                        HttpHeaders.CONTENT_TYPE, "video/mp2t"
+                )
+                .body(resource);
     }
 }

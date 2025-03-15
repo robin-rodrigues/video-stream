@@ -34,3 +34,4 @@ build/
 
 ### Video folder ###
 /videos/
+/videos_hls/

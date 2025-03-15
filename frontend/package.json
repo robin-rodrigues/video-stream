@@ -12,9 +12,11 @@
   "dependencies": {
     "axios": "^1.8.3",
     "flowbite-react": "^0.10.2",
+    "hls.js": "^1.5.20",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "video.js": "^8.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
